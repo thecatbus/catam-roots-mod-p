@@ -1,0 +1,216 @@
+\documentclass[12pt]{article}
+
+\usepackage{titlesec}
+\usepackage{enumerate}
+\usepackage[parfill]{parskip}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{graphicx}
+\usepackage{verbatim}
+
+\titleformat{\section}
+    {\normalfont\fontsize{15}{17}\bfseries}{\thesection}{2.27em}{}
+\titleformat{\subsection}
+    {\normalfont\fontsize{17}{18}\bfseries}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}
+    {\normalfont\fontsize{15}{15}\bfseries}{\arabic{subsubsection}}{1em}{}
+
+\newcommand{\starreditem}{\item[\refstepcounter{enumi}\number\value{enumi}*.]}
+\newcommand{\textmod}[1]{\;(\text{mod }#1)}
+\newcommand{\mathmod}[1]{\quad(\text{mod }#1)}
+
+\begin{document}
+\setcounter{section}{14}
+\section{Number Theory}
+\setcounter{subsection}{5}
+\subsection{Computing roots Modulo \textit{p}}
+\emph{CATAM coursework for Part II of the Mathematical Tripos. Sections have
+been numbered as they appear in the manual.}
+
+\setcounter{subsubsection}{1}
+\subsubsection{Computing Legendre Symbols}
+\textbf{Question 1} \quad 
+We implement the repeated squaring method for modular exponentiation using a
+recursive algorithm: 
+\[a^n \equiv \begin{cases}
+    (a^{\frac{n}{2}})^2, &n\text{ even}, n>0\\
+    a\cdot (a^{\frac{n-1}{2}})^2, &n\text{ odd}\\
+    1, &n = 0
+\end{cases} \quad (\text{mod } p)\]
+This allows for efficient application of Euler's criterion to compute Legendre
+symbols. For \(p=30275233\), we compute \((a/p)\) for \(a\) taking:
+\begin{enumerate}[(i)]
+    \item \(100\) random values between \(1\) and \(p\). Out of these, ?? numbers
+        were found to be quadratic residues mod \(p\).
+    \item all values between \(1\) and \(100\). Out of these, \(58\) numbers
+        were found to be quadratic residues mod \(p\).
+\end{enumerate}
+Appendix A contains a record of all output produced.
+
+ \hfill
+
+\textbf{Question 2}\quad Suppose \(n\) is any odd number and \(m\in
+\mathbb{Z}\).  If \(n=1\), we have \((m/n)=(m/1)=1\). Otherwise, we may assume
+\(0\leq m < n\) by reducing mod \(n\) if necessary. Note that \((0/n)=0\) when
+\(n>1\). If \(m\) is a non-zero even number, we may get rid of
+all factors of \(2\) using the following property of the Jacobi symbol:
+
+\textbf{Lemma} For any positive odd \(n\) we have
+\[\left(\frac{2}{n}\right) = (-1)^{(n^2-1)/8}= \begin{cases} +1, &n \equiv \pm1
+    \mathmod{8} \\ 
+-1, &n\equiv \pm 3 \mathmod{8}\end{cases}\]
+
+A proof of this can be found in [1] (\textit{pp.} 47, Proposition
+II.2.6). Hence we may assume \(m,n\) are both odd and \(1\leq m<n\). We state the following strengthening of quadratic reciprocity: 
+
+\textbf{Lemma} For any two positive odd integers \(m\) and \(n\) we have
+\[\left(\frac{m}{n}\right) = (-1)^{(m-1)(n-1)/4}\left(\frac{n}{m}\right).\]
+
+A proof of this can be found in [1] (\textit{pp.} 47, Proposition
+II.2.7), but it follows immediately from the law of quadratic reciprocity and
+the observation that \((m/n)=0\) whenever \(m\) and \(n\) are not coprime.
+Moreover, we can avoid computing the large product \((m-1)(n-1)/4\) by observing
+that 
+\[(-1)^{(m-1)(n-1)/4} = \begin{cases}
+    -1, & m,n\equiv 3 \quad(\text{mod }4) \\
+    +1, &\text{otherwise}
+\end{cases}\] 
+
+To compute \((m/n)\), it now suffices to compute \((n/m)\). Note that the
+`denominator' strictly decreases after each iteration, hence the recursion must
+halt in finite time.
+
+COMPLEXITYCOMPLEXITYCOMPLEXITY
+
+\subsubsection{Computing square roots mod \textit{p}}
+\textbf{Question 3}\quad 
+Suppose \(p\equiv 3\;(\text{mod }4)\) and \(a\) is a residue mod \(p\). In
+particular, Euler's criterion implies \(a^{(p-1)/2}\equiv 1\textmod{p}\). Then \(x\equiv
+a^{(p+1)/4}\) is a solution to \(x^2\equiv a\textmod{p}\) since
+\[x^2 \equiv a^{(p+1)/2} \equiv a\cdot a^{(p-1)/2} \equiv a \mathmod{p}.\]
+
+Suppose \(p\equiv 5\textmod{8}\). We have \((2/p) \equiv
+2^{(p-1)/2}\equiv -1 \textmod{p}\). If \(a\) is a quadratic residue, we have
+\(a^{(p-1)/2}\equiv 1 \Rightarrow a^{(p-1)/4}\equiv \pm 1 \textmod{p}\). In
+particular, we can write \( 2^{k(p-1)/2} \cdot a^{(p-1)/4}\equiv 1 \textmod{p}\) for some \(k\in
+\{0,1\}\). But then we have \(a \equiv 2^{k(p-1)/2} \cdot a^{(p-1)/4}\cdot a \equiv
+2^{k(p-1)/2}\cdot a^{(p+3)/4} \textmod{p}\). Observe that all the exponents
+involved are even, so we can read off a solution to \(x^2\equiv a\) as \(x\equiv
+2^{k(p-1)/4}\cdot a^{(p+3)/8}\textmod{p}\).
+
+\hfill 
+
+Now suppose \(p\) is a prime of the form \(2^n+1\) (we only consider \(n>2\)
+since \(p=3,5\) have been covered above). Then \(p\equiv (-1)^n+1\textmod{3}\),
+hence \(n\) must be even. It follows that \(p\equiv 1\textmod{4}\) and \(p\equiv
+2\textmod{3}\), so that \((3/p) = (p/3) = (2/3) = -1\). Let \(g\) be any
+primitive root mod \(p\). The subgroup \(\langle g^2\rangle\) has order
+\(2^{n-1}=\frac{p-1}{2}\) hence contains all the quadratic residues. Moreover,
+it is the unique multiplicative subgroup of order \(2^{n-1}\). Since \(3\notin
+\langle g^2\rangle\), the multiplicative order of \(3\) must be \(2^n\) i.e.\
+\(3\) is also a primitive root mod \(p\). 
+
+\textbf{Question 4}\quad
+Suppose \(p=65537=2^{16}+1\), and we wish to solve the congruence \(x^2\equiv
+18612 \textmod{p}\). We compute \((18612/65537)=1\) using the program written
+for Question 2, so such an \(x\) exists. For the purposes of this question, use
+`\(=\)' to denote congruence mod \(p\). For modular exponentiation, we use a
+program based on the repeated squaring method.
+
+Since \(3\) is a primitive root mod \(p\), we may write \(x =
+3^{r_0+2r_1+2^2r_2+...}\) where each \(r_j\in \{0,1\}\). The congruence
+\(x^2=18612\) can be written as \(\prod_{j\geq 0} 3^{r_j2^{j+1}} = 18612
+\textmod{p}\). 
+
+Raising both the sides to \(2^{14}\), all the terms for \(j\geq 1\) vanish and
+we are left with \(3^{r_02^{15}}= 18612^{2^{14}} = 1\). Since \(3\) is a
+primitive root, \(3^{2^{15}} = -1\) by Euler's criterion and we have \(r_0=0\).
+In fact, \(18612^{2^n}=1\) for all \(14\geq n\geq 11\) hence we have \(r_0=...=r_3 =
+0\). 
+
+Raising both the sides of \(\prod_{j\geq 4}3^{r_j2^{j+1}}=18612\) to the power
+\(2^{10}\), we obtain \(3^{r_42^{15}}=-1\), hence \(r_4 = 1\). We may multiply
+both the sides of the congruence by \(3^{-r_42^5} = 3^{2^{16}-2^5} = 29606\) to
+obtain \(\prod_{j\geq 5}3^{r_j2^{j+1}}=57313.\) 
+
+Again, \(57313^{2^n}=1\) for \(9\geq n \geq 6\), so \(r_5=...=r_8=0\), and we
+have \(\sum_{j\geq 9}3^{r_j2^{j+1}} = 57313\). Raising both the sides to the
+power \(2^5\), we obtain \(3^{r_92^{15}}=-1\), hence \(r_9 = 1\). Multiply both
+the sides by \(3^{-r_92^{10}} = 3^{2^{16}-2^{10}} = 64509\) to obtain
+\(\prod_{j\geq 10}3^{r_j2^j} = 65536 = -1\). Comparing with \(3^{2^{15}} = -1\),
+we deduce \(r_{10} = ... = r_{13}=0\) and \(r_{14}=1\).
+
+We can now read off the solution to \(x^2 = 18612\) as \(x= 3^r\) where
+\(r=2^4+2^9+2^{14}\). A square root of \(18612\) (mod \(p\)) hence is
+\(45462\). The other square root is \(-45462= 20075\) and these are the only
+solutions to \(x^2 =18612\) since \((\mathbb{Z}/p\mathbb{Z})^\ast\) is a field.
+
+\hfill 
+
+Suppose \(p\) is any odd prime and \(a\) is a quadratic residue mod \(p\). In
+this section, use `\(=\)' to denote congruence mod \(p\). We may find \(\alpha >
+0\) and \(s\) odd such that \(p-1 = 2^\alpha s\). Since \(s\) is odd, we
+define \(z = a^{(s+1)/2}\) and observe that if \(y^2 = a^s\), then \(zy^{-1}\)
+is a square root of \(a\) mod \(p\) (where \(y^{-1}\) is the multiplicative inverse of
+\(y\) in \((\mathbb{Z}/p\mathbb{Z})^\times\).)
+
+Now \((a^s)^{2^{\alpha - 1}} = a^{(p-1)/2} = (a/p)= 1\), so \(y\) is an  element of the
+cyclic multiplicative group \(G=\{g\in
+(\mathbb{Z}/p\mathbb{Z})^\times\;|\;g^{2^{\alpha}} = 1\}\). Suppose \(n\) is any
+non-residue mod \(p\), and let \(b=n^s\). Then we have \(b^{2^\alpha}=n^{p-1} =
+1\) hence \(b\in G\), and moreover \(b\) generates the group since
+\(b^{2^{\alpha - 1}}=n^{(p-1)/2} = (n/p)=-1\). We can then write \(y = b^r\),
+and solve for \(r\) algorithmically by considering its binary expansion. A
+square root of \(a\), then, is \(zb^{2^{\alpha}-r}\).
+
+\textbf{Question 5}\quad We implement an algorithm that uses the above method to
+compute square roots mod \(p\) when \(p\equiv 1 \textmod{8}\), using the more
+direct computations from Question 3 to handle other cases. The second solution
+to the congruence \(x^2\equiv a \textmod{p}\) can be computed as \(-1\) times the first
+solution. 
+
+Here are some test cases, in the form \texttt{(a, root a)}. The values of \(a\)
+(other than the first) have been chosen randomly subject to being quadratic
+residues. The primes have been chosen\footnote{The first prime is the largest
+known Fermat prime, while the latter four are relatively large palindromic
+primes [OEIS: A055578].} to cover all possible congruence classes mod \(8\). The
+generated roots can be confirmed to be accurate by squaring them. In particular,
+the first test case agrees with what we found in Question 4.
+
+\verbatiminput{../output/Test-roots.txt}
+
+Additionally, we compute the roots of all quadratic residues in
+\(\{1,2,...,20\}\) mod \(30275233\) and present the results in Appendix B.
+
+COMPLEXITYCOMPLEXITYCOMPLEXITY
+
+\subsubsection{Computing roots of polynomials mod \textit{p}}
+
+\subsubsection*{Appendix A: Computed Legendre symbols}
+Using Euler's criterion, Legendre symbols were computed for \(100\) random
+values between \(1\) and \(p=30275233\). The results are recorded here in the
+format \(\texttt{a: (a/p)}\).
+
+\verbatiminput{../output/Legendre-random.txt} 
+
+We also perform a similar calculation for all \(a\) between \(1\) and \(100\).
+
+\verbatiminput{../output/Legendre-100.txt} 
+
+\subsubsection*{Appendix B: Roots of residues mod 30275233}
+For every integer \(1\leq a\leq 20\), we check if \(a\) is a quadratic residue
+mod \(p=30275233\) and if so, compute a solution to \(x^2\equiv a\textmod{p}\).
+The computed roots are presented in format \texttt{(a, root a)}.
+
+\verbatiminput{../output/Twenty-roots.txt} 
+
+\subsubsection*{References}
+\begin{enumerate}[{[}1{]}]
+    \item Koblitz, N. \textit{A course in Number Theory and Cryptography},
+        Graduate Texts in Mathematics 114, Springer, 1987.
+\end{enumerate}
+\end{document}
