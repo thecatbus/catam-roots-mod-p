@@ -1,9 +1,9 @@
 # Fdb version 3
-["xdvipdfmx"] 1616880446 "Roots.xdv" "Roots.pdf" "Roots" 1616880447
-  "Roots.xdv" 1616880446 87252 d0eb16758b16db9e43cd1c85eb04e0b5 "xelatex"
+["xdvipdfmx"] 1617038663 "Roots.xdv" "Roots.pdf" "Roots" 1617038664
+  "Roots.xdv" 1617038663 111268 4b7e9e86dcb38a09a2e43a5b7aaa6ac1 "xelatex"
   (generated)
   "Roots.pdf"
-["xelatex"] 1616880446 "Roots.tex" "Roots.xdv" "Roots" 1616880447
+["xelatex"] 1617038662 "Roots.tex" "Roots.xdv" "Roots" 1617038664
   "../output/Legendre-100.txt" 1616879888 1265 6f0ef152a5629a844ce31a0d2a773ada ""
   "../output/Legendre-random.txt" 1616879888 1770 4c9eea1cf4e3ffc0e709cb9dc6af659e ""
   "../output/Test-roots.txt" 1616880235 302 31d3ff569c981443f4465afdc7f56532 ""
@@ -62,8 +62,8 @@
   "/usr/local/texlive/2020/texmf-dist/web2c/texmf.cnf" 1583102494 39451 60d7debd9ef8ece44cbe965493576c2d ""
   "/usr/local/texlive/2020/texmf-var/web2c/xetex/xelatex.fmt" 1607936150 4769637 39a17f0fc98a64aa8c8915a97eb01eb7 ""
   "/usr/local/texlive/2020/texmf.cnf" 1586288231 577 d60164b4589a341208aff7a667fbbdcb ""
-  "Roots.aux" 1616880446 638 a20ce3130416fd714e82ae30975494ac "xelatex"
-  "Roots.tex" 1616880445 10178 4af78e5a19d0bbb880abea9892ea50cf ""
+  "Roots.aux" 1617038663 638 cfd0cbe694b77a190d8e42393fa8b4eb "xelatex"
+  "Roots.tex" 1617038661 13597 4bf452473aba95d67b4877405a24ce32 ""
   (generated)
   "Roots.xdv"
   "Roots.aux"

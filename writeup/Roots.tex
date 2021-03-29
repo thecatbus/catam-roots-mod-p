@@ -189,6 +189,63 @@ Additionally, we compute the roots of all quadratic residues in
 COMPLEXITYCOMPLEXITYCOMPLEXITY
 
 \subsubsection{Computing roots of polynomials mod \textit{p}}
+Let \(p\) be a prime.
+
+\textbf{Question 6}\quad Given two polynomials \(f\) and \(g\) in
+\((\mathbb{Z}/p\mathbb{Z})[x]\), note that \(\mathbb{Z}/p\mathbb{Z}\) is a field
+hence the leading coefficient of \(g\) is a unit-- moreover, we can use Fermat's
+little theorem to explicitly compute its inverse using the repeated squaring
+method. With this, we implement a recursive algorithm to eliminate terms in
+\(f\) of degree higher than \(\deg(g)\) and find polynomials \(q,r\) such that
+\(f = qg+r\), \(\deg(r)<\deg(g)\). Write \(r=\text{rem}(f,g)\). 
+
+This allows for the application of Euclid's algorithm to find the greatest
+common divisor of \(f\) and \(g\), by 
+\[\text{gcd}(f,g) = \begin{cases} f, &g=0 \\
+\text{gcd}(g,\text{rem}(f,g)),&\text{otherwise}\end{cases}.\]
+The answer is generated up to a unit, so we divide by the leading coefficient to
+normalise. To test the algorithm, we compute the greatest common divisors for
+the following pairs of polynomials: 
+\begin{align*}
+    &\text{gcd}(x^3+6x^2+5x+5, x^3+13x^2+6x+3) = x^2 + 78x + 62 &(p=109). \\
+    &\text{gcd}(x^3+2x^2+9x+4, x^3+3x^2+7x+9) = 1 &(p=131). \\
+    &\text{gcd}(x^3+3x^2+9x+12, x^3+6x^2+12x+4) = x+83 &(p=157). \\
+\end{align*}
+
+If \(f,g,h\) are polynomials, write \(f\equiv g\textmod{h}\) to mean `there
+exists a polynomial \(q\) such that \(f = qh+g\).' It is straightforward to
+check that this is an equivalence relation, and \(f_1\equiv g_1\textmod{h}\),
+\(f_2\equiv g_2\textmod{h}\) implies \(f_1+f_2 \equiv g_1+g_2\textmod{h}\) and
+\(f_1f_2\equiv g_1g_2\textmod{h}\).  Moreover, \(\text{rem}(f,h)\) is the unique
+\(g\) such that \(f\equiv g\textmod{h}\), \(\deg(g)<\deg(h)\). It follows that
+\(f\equiv f'\textmod{h}\) implies \(\text{rem}(f,h)=\text{rem}(f',h)\).
+
+Let \(f \in (\mathbb{Z}/p\mathbb{Z})[x]\) be any polynomial. The polynomial
+\(\Phi(x)=x^p-x \) factorises as \(\Phi(x) = \prod_{i=0}^{p-1}(x-i)\) hence
+\(g=\text{gcd}(f,\Phi)\) is a product of distinct linear factors. Moreover,
+\((x-i)\;|\;f\) if and only if \((x-i)\;|\;g\), hence to compute the roots of
+\(f\) it suffices to compute the roots of \(g\).
+
+Now the computation of \(g\) using Euclidean algorithm takes at most \(\deg(f)\)
+steps, and in each step except for the first one, the degree of polynomials
+involved is less than \(\deg(f)\). Naively computing \(\text{rem}(\Phi, f)\)
+would take \(O(p)\) steps; however we observe that
+\[\text{rem}(x^p-x,f)\equiv \text{rem}(x^p,f)-\text{rem}(x,f) \mathmod{h}\]
+The second term is straightforward to compute. For the first term, we can use a
+repeated squaring algorithm similar to that for modular exponentiation of
+numbers. This speeds up the first step of Euclidean algorithm to take \(O(\log
+p)\) steps, and moreover the polynomials involved in each computation have
+degree at most \(2\deg(f)\).
+
+Having reduced \(f\) to the case where it is a product of distinct linear
+factors, we fix a \(v \in \mathbb{Z}/p\mathbb{Z}\) and compute
+\(\text{gcd}((x+v)^{(p-1)/2}-1, f)\). Everything that has been said about
+avoiding large powers in the computation applies here. The greatest common
+divisor is \(f\) if \(\alpha+v\) is a quadratic residue for every root
+\(\alpha\) of \(f\), it is \(1\) if \(\alpha+v\) is a non-residue for every root
+\(\alpha\) of \(f\). Otherwise, we have arrived at a non-trivial factor
+of \(f\), and can repeat the process with these till we have found all
+linear factors (and hence the roots).
 
 \subsubsection*{Appendix A: Computed Legendre symbols}
 Using Euler's criterion, Legendre symbols were computed for \(100\) random
