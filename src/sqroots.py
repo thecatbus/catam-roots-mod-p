@@ -11,14 +11,14 @@ def rootmod(a,p):
             v = j.modexp(a, (p+3)//8, p)
             root = (u * v) % p 
     else: 
-        # decompose p-1 = (2 ** alpha) * s
+        # decompose p-1 = (2^alpha) * s
         s = p - 1 
         alpha = 0
         while s % 2 == 0:
             s = s // 2 
             alpha = alpha + 1
         order = 2 ** alpha
-        # find non-residue n and generator b =n ** s of roots of unity
+        # find non-residue n and generator b =n^s of roots of unity
         n = 1
         while j.jacobi(n,p) == 1:
             n = n + 1

@@ -11,6 +11,36 @@
 \usepackage{float}
 \usepackage{graphicx}
 \usepackage{verbatim}
+\usepackage{listings}
+
+\usepackage{xcolor}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+
+\lstdefinestyle{mystyle}{
+    language=Python,
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegray},
+    keywordstyle=\color{codegreen},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\ttfamily\scriptsize,
+    breakatwhitespace=false,         
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+
+\lstset{style=mystyle}
+
 
 \titleformat{\section}
     {\normalfont\fontsize{15}{17}\bfseries}{\thesection}{2.27em}{}
@@ -44,8 +74,8 @@ recursive algorithm:
 This allows for efficient application of Euler's criterion to compute Legendre
 symbols. For \(p=30275233\), we compute \((a/p)\) for \(a\) taking:
 \begin{enumerate}[(i)]
-    \item \(100\) random values between \(1\) and \(p\). Out of these, ?? numbers
-        were found to be quadratic residues mod \(p\).
+    \item \(100\) random values between \(1\) and \(p\). Out of these, 58
+        numbers were found to be quadratic residues mod \(p\).
     \item all values between \(1\) and \(100\). Out of these, \(58\) numbers
         were found to be quadratic residues mod \(p\).
 \end{enumerate}
@@ -84,7 +114,23 @@ To compute \((m/n)\), it now suffices to compute \((n/m)\). Note that the
 `denominator' strictly decreases after each iteration, hence the recursion must
 halt in finite time.
 
-COMPLEXITYCOMPLEXITYCOMPLEXITY
+We compute the complexity of our algorithm which computes \((m/n)\), without
+loss of generality \(m\geq n\). If the numerator at each step is odd, the
+algorithm operates like Euclid's algorithm for the greatest common divisor. In
+particular, there are at most \(O(\log n)\) reductions of form \((m/n)\mapsto (n
+\mod m / m)\). However, with each reduction we also remove all powers of \(2\)
+from the numerator. Since the numerator is bounded by \(m\), each reduction
+takes \(O(\log m)\) basic operations hence the entire algorithm has complexity
+\(O(\log m \log n)\).
+
+Reducing mod \(p\), we may assume \(0\leq m,n < p\) so that the algorithm has
+complexity \(O((\log p)^2)\). In contrast, the repeated squaring algorithm of
+Question 1 computes the Legendre symbol in \(O(\log p)\) basic operations. While
+it may seem that repeated squaring is faster, we must also acknowledge the
+fact that the `basic' operations involved are multiplications of numbers
+containing \(\log p\) bits. For large \(p\), this significantly affects the
+performance of the algorithm from Question 1 whereas the second algorithm
+remains relatively unaffected.
 
 \subsubsection{Computing square roots mod \textit{p}}
 \textbf{Question 3}\quad 
@@ -186,7 +232,20 @@ the first test case agrees with what we found in Question 4.
 Additionally, we compute the roots of all quadratic residues in
 \(\{1,2,...,20\}\) mod \(30275233\) and present the results in Appendix B.
 
-COMPLEXITYCOMPLEXITYCOMPLEXITY
+The complexity of this algorithm can two sources, the first of which is finding
+\(b\). We run an exhaustive search, computing \((n/p)\) for \(n=1,2,...\) until
+a non-residue is hit. In the worst case this has complexity \(O(p(\log p)^2)\),
+but assuming that quadratic residues are uniformly distributed in
+\((\mathbb{Z}/p\mathbb{Z})^\times\) i.e.\ if \(\mathbb{P}((a/p)=1) =
+\frac{1}{2}\), we expect to succeed in \(\sum_{n=1}^\infty n (\frac{1}{2})^n =
+2\) steps. Hence this part of the algorithm effectively has complexity
+\(O(1)\) (since \(n\approx 1\)). 
+
+Hence all of the complexity comes from computing \(r\), which we can bound by
+\(p\). Then we need to compute the \(O(\log p)\) digits of \(r\), each of
+which takes \(O(\log p)\) steps to compute (since the computation involves
+exponentiation). Hence we estimate the entire algorithm to have complexity
+\(O((\log p)^2)\).
 
 \subsubsection{Computing roots of polynomials mod \textit{p}}
 Let \(p\) be a prime.
@@ -220,7 +279,7 @@ check that this is an equivalence relation, and \(f_1\equiv g_1\textmod{h}\),
 \(g\) such that \(f\equiv g\textmod{h}\), \(\deg(g)<\deg(h)\). It follows that
 \(f\equiv f'\textmod{h}\) implies \(\text{rem}(f,h)=\text{rem}(f',h)\).
 
-Let \(f \in (\mathbb{Z}/p\mathbb{Z})[x]\) be any polynomial. The polynomial
+\textbf{Question 7}\quad Let \(f \in (\mathbb{Z}/p\mathbb{Z})[x]\) be any polynomial. The polynomial
 \(\Phi(x)=x^p-x \) factorises as \(\Phi(x) = \prod_{i=0}^{p-1}(x-i)\) hence
 \(g=\text{gcd}(f,\Phi)\) is a product of distinct linear factors. Moreover,
 \((x-i)\;|\;f\) if and only if \((x-i)\;|\;g\), hence to compute the roots of
@@ -247,6 +306,42 @@ divisor is \(f\) if \(\alpha+v\) is a quadratic residue for every root
 of \(f\), and can repeat the process with these till we have found all
 linear factors (and hence the roots).
 
+How many tries will this algorithm require before successfully factorizing a
+quadratic? For simplicity assume that quadratic residues are uniformly
+distributed in
+\((\mathbb{Z}/p\mathbb{Z})^\times\), i.e.\ \(\mathbb{P}((n/p)=1)=\frac{1}{2}\)
+for \(n\) sampled randomly. Then in this simplified model, the
+probability of obtaining a successful factorisation \((x-\alpha)(x-\beta)\)
+with a randomly chosen \(v\) is \(\frac{1}{2}\) (i.e.\ probability that both \(v+\alpha\) and \(v+\beta\) are residues or non-residues). Hence the expected number of tries before success is \(\sum_{n=1}^\infty n (\frac{1}{2})^n=2\).
+
+We employ this method to find square roots by using \(f=x^2-a\). The
+roots of all quadratic residues between \(21\) and \(99\) are computed
+and recorded in Appendix B. The averate number of tries until success
+is \(1.83\) which is very close to the expected value predicted by our model.
+
+Given the discussion above, for calculation of complexity we assume the
+algorithm succeeds on the first trial. Since \(f\) is quadratic, the complexity
+of polynomial division arises from having to invert leading coefficients which
+takes \(O(\log p)\) steps. The faster algorithm for computing greatest common
+divisors takes \(O(\log p)\) steps to compute
+\(\text{gcd}((x+v)^\frac{p-1}{2}-1, f)\) hence the entire algorithm has
+complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
+entire algorithm has complexity \(O(\log p)\).the entire algorithm has
+complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
+entire algorithm has complexity \(O(\log p)\).the entire algorithm has
+complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
+entire algorithm has complexity \(O(\log p)\). This is significantly faster than
+the algorithm of Question 5 for large \(p\).
+
+\textbf{Question 8} \quad We use the algorithm discussed above to compute the
+roots of the following biquadratic polynomials modulo \(35564117\):
+
+\begin{tabular}{ll}
+    \(x^4 + 5x^3 + 12x^2 + 6\) &\(\{7174009, 9335487, 21485344, 33133389\}\)\\
+    \(x^4 + x^3 + 3x^2 + 7x + 4\) &\(\{22043805, 13520313, 35564116\}\)\\
+    \(x^4 + 4x^3 + 15x^2 + 3x + 8\) &\(\{16498240, 3842901\}\)
+\end{tabular}
+
 \subsubsection*{Appendix A: Computed Legendre symbols}
 Using Euler's criterion, Legendre symbols were computed for \(100\) random
 values between \(1\) and \(p=30275233\). The results are recorded here in the
@@ -260,10 +355,36 @@ We also perform a similar calculation for all \(a\) between \(1\) and \(100\).
 
 \subsubsection*{Appendix B: Roots of residues mod 30275233}
 For every integer \(1\leq a\leq 20\), we check if \(a\) is a quadratic residue
-mod \(p=30275233\) and if so, compute a solution to \(x^2\equiv a\textmod{p}\).
-The computed roots are presented in format \texttt{(a, root a)}.
+mod \(p=30275233\) and if so, compute a solution to \(x^2\equiv a\textmod{p}\)
+using the method of Question 5.
+The computed roots are presented in format \texttt{(a, root a)}. Note that the second root is simply the additive inverse of the given one.
 
 \verbatiminput{../output/Twenty-roots.txt} 
+
+We perform a similar exercise for integers \(21 \leq a < 100\), this time
+using the method of Question 7 instead i.e.\ computing the roots of \(x^2-a\). 
+The computed square roots are presented in format \texttt{(a, root a)}. We also
+record the average number of values of \(v\) used before arriving at a
+successful factorisation.
+
+\verbatiminput{../output/Twenty-roots-2.txt} 
+
+\pagebreak
+
+\subsubsection*{Appendix C: Programs}
+
+\underline{\texttt{jacobi.py}}
+\lstinputlisting{../src/jacobi.py}
+
+\underline{\texttt{sqroots.py}}
+\lstinputlisting{../src/sqroots.py}
+
+\underline{\texttt{polyroots.py}}
+\lstinputlisting{../src/polyroots.py}
+
+\underline{\texttt{main.py}}
+\lstinputlisting{../src/main.py}
+
 
 \subsubsection*{References}
 \begin{enumerate}[{[}1{]}]

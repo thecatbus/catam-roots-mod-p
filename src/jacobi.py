@@ -1,23 +1,22 @@
 def modexp(a,n,p): 
-    if n == 0:
-        return 1
-    elif n%2==0:
-        tmp = modexp(a,n // 2,p) 
-        val = (tmp * tmp)%p
-        if val <= (p-1) // 2:
-            return val 
-        else: 
-            return val - p
-    else:
-        tmp = modexp(a, (n-1) // 2, p)
-        val = (a * tmp * tmp)%p
-        if val <= (p-1) // 2:
-            return val 
-        else: 
-            return val - p
+    result = 1
+    x = a % p 
+    while n:
+        if n % 2 != 0:
+            result = (result * x) % p
+        x = (x * x) % p
+        n = n // 2
+    return result
+
+def invmod(a, p): 
+    return modexp(a, p-2, p) 
 
 def legendre(a,p):
-    return modexp(a, (p-1) // 2, p)
+    result = modexp(a, (p-1) // 2, p)
+    if result <= p//2:
+        return result
+    else:
+        return (result-p)
 
 def jacobi(m,n):
     m = m % n

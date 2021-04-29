@@ -1,6 +1,8 @@
 import jacobi as j
 import sqroots as s
+import polyroots as pr
 import random
+from polynomial import Polynomial
 
 # Pretty printing
 def monostr(number, digitcount):
@@ -50,7 +52,6 @@ f2.write("\n\nNumber of quadratic residues encountered: "+ str(f2res))
 f1.close(); f2.close()
 
 # Question 2
-# clear contents before proceeding
 f = open("../output/Test-roots.txt", "w"); f.close()
 
 def gentests(prime, count): 
@@ -66,6 +67,7 @@ def gentests(prime, count):
             continue 
     f.write("\n")
 
+# Question 5
 f = open("../output/Test-roots.txt", "a")
 
 f.write("mod 65537:   ")
@@ -93,6 +95,54 @@ for a in range(20):
     else: 
         count += 1
         f.write("("+str(a)+", "+str(s.rootmod(a,p))+")   ")
-        if count % 5 == 0:
+        if count % 3 == 0:
             count = 0
             f.write("\n")
+f.close()
+
+
+# Question 6
+print("\nGCDs of polynomials:")
+print("gcd [1,6,5,5], [1,13,6,3] mod 109")
+print(pr.gcdmod(Polynomial(1,6,5,5), 
+                Polynomial(1,13,6,3),
+                109))
+print("gcd [1,2,9,4], [1,3,7,9] mod 131")
+print(pr.gcdmod(Polynomial(1,2,9,4), 
+                Polynomial(1,3,7,9),
+                131))
+print("gcd [1,3,9,12], [1,6,12,4] mod 157")
+print(pr.gcdmod(Polynomial(1,3,9,12), 
+                Polynomial(1,6,12,4),
+                157))
+
+# Question 7
+f = open("../output/Twenty-roots-2.txt", "w"); f.close()
+f = open("../output/Twenty-roots-2.txt", "a")
+p = 30275233
+
+totaltries = []
+count = 0
+for a in range(21, 100):
+    if j.jacobi(a, p) != 1:
+        continue
+    else: 
+        count += 1
+        (roots,tries) = pr.polyrootsmod(Polynomial(1,0,-1 * a), p)
+        totaltries.append(tries)
+        f.write("("+str(a)+", "+str(roots[0])+")   ")
+        if count % 3 == 0:
+            count = 0
+            f.write("\n")
+f.write("\nAverage number of tries: ")
+f.write(str(sum(totaltries)/len(totaltries)))
+f.close()
+
+# Question 8
+p = 35564117
+polys = [Polynomial(1,5,12,0,6), 
+         Polynomial(1,1,3,7,4), 
+         Polynomial(1,4,15,3,8)]
+for poly in polys: 
+    print("\nRoots of "+str(poly))
+    print(pr.polyrootsmod(poly, p)[0])
