@@ -74,12 +74,15 @@ recursive algorithm:
 This allows for efficient application of Euler's criterion to compute Legendre
 symbols. For \(p=30275233\), we compute \((a/p)\) for \(a\) taking:
 \begin{enumerate}[(i)]
-    \item \(100\) random values between \(1\) and \(p\). Out of these, 58
+    \item \(100\) random values between \(1\) and \(p\). Out of these, 52
         numbers were found to be quadratic residues mod \(p\).
     \item all values between \(1\) and \(100\). Out of these, \(58\) numbers
         were found to be quadratic residues mod \(p\).
 \end{enumerate}
-Appendix A contains a record of all output produced.
+Appendix A contains a record of all output produced. Note that in both the
+cases, approximately half of the numbers tested turned out to be quadratic
+residues. This suggests that one might model quadratic residues in a finite
+field using a uniform distribution.
 
  \hfill
 
@@ -134,7 +137,7 @@ remains relatively unaffected.
 
 \subsubsection{Computing square roots mod \textit{p}}
 \textbf{Question 3}\quad 
-Suppose \(p\equiv 3\;(\text{mod }4)\) and \(a\) is a residue mod \(p\). In
+Suppose \(p\equiv 3\;(\text{mod }4)\) and \(a\) is a quadratic residue mod \(p\). In
 particular, Euler's criterion implies \(a^{(p-1)/2}\equiv 1\textmod{p}\). Then \(x\equiv
 a^{(p+1)/4}\) is a solution to \(x^2\equiv a\textmod{p}\) since
 \[x^2 \equiv a^{(p+1)/2} \equiv a\cdot a^{(p-1)/2} \equiv a \mathmod{p}.\]
@@ -325,12 +328,7 @@ of polynomial division arises from having to invert leading coefficients which
 takes \(O(\log p)\) steps. The faster algorithm for computing greatest common
 divisors takes \(O(\log p)\) steps to compute
 \(\text{gcd}((x+v)^\frac{p-1}{2}-1, f)\) hence the entire algorithm has
-complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
-entire algorithm has complexity \(O(\log p)\).the entire algorithm has
-complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
-entire algorithm has complexity \(O(\log p)\).the entire algorithm has
-complexity \(O(\log p)\).the entire algorithm has complexity \(O(\log p)\).the
-entire algorithm has complexity \(O(\log p)\). This is significantly faster than
+complexity \(O(\log p)\). This is significantly faster than
 the algorithm of Question 5 for large \(p\).
 
 \textbf{Question 8} \quad We use the algorithm discussed above to compute the
